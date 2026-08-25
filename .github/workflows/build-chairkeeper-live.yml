@@ -1,4 +1,4 @@
-name: Build ChairKeeper Live
+name: Build ChairKeeper Direct Sandbox
 
 on:
   push:
@@ -10,38 +10,97 @@ permissions:
   contents: write
 
 jobs:
-  build-live-html:
+  build-direct-sandbox:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download verified full ChairKeeper pages
+      - name: Assemble normal static ChairKeeper files
+        shell: bash
         run: |
           set -euo pipefail
-          mkdir -p simply-hope-live-v098
-          curl -fL --retry 3 --retry-delay 2 'https://at.adobe.com/XbdYW51EXpZL6w0A' -o simply-hope-live-v098/index.html
-          curl -fL --retry 3 --retry-delay 2 'https://at.adobe.com/I8SKiPitgaFA7o1h' -o simply-hope-live-v098/owner.html
+          python - <<'PY'
+          from pathlib import Path
+          import base64, gzip, re
 
-          customer_size=$(wc -c < simply-hope-live-v098/index.html)
-          owner_size=$(wc -c < simply-hope-live-v098/owner.html)
-          echo "customer bytes: $customer_size"
-          echo "owner bytes: $owner_size"
+          src = Path('simply-hope-cloud-v095')
+          out = Path('simply-hope-live-v099')
+          out.mkdir(parents=True, exist_ok=True)
 
-          test "$customer_size" -gt 200000
-          test "$owner_size" -gt 100000
-          grep -qi '<!doctype html' simply-hope-live-v098/index.html
-          grep -qi '<!doctype html' simply-hope-live-v098/owner.html
-          grep -q 'Simply Hope' simply-hope-live-v098/index.html
-          grep -q 'Simply Hope' simply-hope-live-v098/owner.html
+          def ungzip_b64(paths):
+              text = ''.join(Path(p).read_text(encoding='utf-8') for p in paths)
+              raw = base64.b64decode(''.join(text.split()))
+              return gzip.decompress(raw).decode('utf-8')
 
-      - name: Commit direct pages
+          css = ungzip_b64([src/'app-css.b64'])
+          js = ungzip_b64([src/'app-js-1.b64', src/'app-js-2.b64'])
+          customer = (src/'index.html').read_text(encoding='utf-8')
+          owner = ungzip_b64([src/'owner-html.b64'])
+
+          config = """<script>
+          window.CK_CONFIG={
+            studioSlug:'simply-hope-designs',
+            supabaseUrl:'https://iitliogbmczplvoscnlo.supabase.co',
+            supabasePublishableKey:'sb_publishable_LH7FPASKCnZklZeRbwWqBg_w1Ziv9-Z',
+            cloudRequired:true,
+            version:'0.9.9',
+            releaseName:'Full-Play Cloud Sandbox · Direct Build',
+            buildId:'v0.9.9-direct-cloud-sandbox',
+            schemaVersion:'0006_v090_ai_intake_client_cards',
+            buildDate:'2026-08-25',
+            sandboxMode:true,
+            ownerRedirectUrl:'./owner.html',
+            customerUrl:'./'
+          };
+          </script>"""
+
+          logo='https://iitliogbmczplvoscnlo.supabase.co/storage/v1/object/public/chairkeeper-catalog/brand/simply-hope-logo.jpg'
+          green='https://iitliogbmczplvoscnlo.supabase.co/storage/v1/object/public/chairkeeper-catalog/portfolio/simply-hope-green.jpg'
+          blue='https://iitliogbmczplvoscnlo.supabase.co/storage/v1/object/public/chairkeeper-catalog/portfolio/simply-hope-blue.jpg'
+
+          def direct_page(html):
+              html = html.replace('assets/simply-hope-logo.jpg', logo)
+              html = html.replace('assets/simply-hope-green.jpg', green)
+              html = html.replace('assets/simply-hope-blue.jpg', blue)
+              if 'app.css?v=099' not in html:
+                  html = html.replace('</head>', '  <link rel="stylesheet" href="app.css?v=099">\n</head>')
+              html = re.sub(r'<script\s+src=["\']boot\.js[^"\']*["\'][^>]*></script>', config + '\n  <script type="module" src="app.js?v=099"></script>', html)
+              html = html.replace('html-preview.github.io', 'disabled-preview.invalid')
+              return html
+
+          customer = direct_page(customer)
+          owner = direct_page(owner)
+
+          (out/'app.css').write_text(css, encoding='utf-8')
+          (out/'app.js').write_text(js, encoding='utf-8')
+          (out/'index.html').write_text(customer, encoding='utf-8')
+          (out/'owner.html').write_text(owner, encoding='utf-8')
+
+          assert len(css) > 15000, len(css)
+          assert len(js) > 90000, len(js)
+          assert 'signInWithPassword' in js
+          assert 'ai-intake' in js
+          assert 'window.CK_CONFIG' in customer and 'window.CK_CONFIG' in owner
+          assert 'app.css?v=099' in customer and 'app.js?v=099' in customer
+          assert 'app.css?v=099' in owner and 'app.js?v=099' in owner
+          assert 'boot.js' not in customer and 'boot.js' not in owner
+          assert 'html-preview.github.io' not in customer and 'html-preview.github.io' not in owner
+          assert logo in customer and green in customer and blue in customer
+          print('customer bytes', len(customer))
+          print('owner bytes', len(owner))
+          print('css bytes', len(css))
+          print('js bytes', len(js))
+          PY
+
+      - name: Commit direct sandbox
         run: |
+          set -euo pipefail
           git config user.name "ChairKeeper Build Bot"
           git config user.email "actions@users.noreply.github.com"
-          git add simply-hope-live-v098/index.html simply-hope-live-v098/owner.html
+          git add simply-hope-live-v099/index.html simply-hope-live-v099/owner.html simply-hope-live-v099/app.css simply-hope-live-v099/app.js
           if git diff --cached --quiet; then
             echo "No changes"
           else
-            git commit -m "Publish ChairKeeper direct full HTML"
+            git commit -m "Publish ChairKeeper v0.9.9 direct sandbox"
             git push
           fi
