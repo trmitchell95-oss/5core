@@ -1,0 +1,53 @@
+name: Build ChairKeeper Live
+
+on:
+  push:
+    paths:
+      - '.github/workflows/build-chairkeeper-live.yml'
+      - 'simply-hope-play-v096/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-live-html:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Reconstruct full ChairKeeper HTML
+        shell: python
+        run: |
+          from pathlib import Path
+          import base64, gzip
+
+          src = Path('simply-hope-play-v096')
+          out = Path('simply-hope-live-v098')
+          out.mkdir(exist_ok=True)
+
+          files = {
+              'index.html': ['index-1.b64','index-2.b64','index-3.b64'],
+              'owner.html': ['owner-1.b64','owner-2.b64','owner-3.b64'],
+          }
+
+          for target, chunks in files.items():
+              encoded = ''.join((src / c).read_text(encoding='utf-8').strip() for c in chunks)
+              html = gzip.decompress(base64.b64decode(encoded)).decode('utf-8')
+              html = html.replace('v0.9.6-open-play', 'v0.9.8-direct-host')
+              html = html.replace('v0.9.6', 'v0.9.8')
+              html = html.replace('Open Full-Play Sandbox · Live AI', 'Direct Full-Play Sandbox · Live AI')
+              (out / target).write_text(html, encoding='utf-8')
+              print(target, len(html))
+
+      - name: Commit reconstructed pages
+        run: |
+          git config user.name "ChairKeeper Build Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add simply-hope-live-v098/index.html simply-hope-live-v098/owner.html
+          if git diff --cached --quiet; then
+            echo "No changes"
+          else
+            git commit -m "Publish ChairKeeper v0.9.8 direct HTML"
+            git push
+          fi
