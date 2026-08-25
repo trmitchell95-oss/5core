@@ -4,7 +4,6 @@ on:
   push:
     paths:
       - '.github/workflows/build-chairkeeper-live.yml'
-      - 'simply-hope-play-v096/**'
   workflow_dispatch:
 
 permissions:
@@ -16,31 +15,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Reconstruct full ChairKeeper HTML
-        shell: python
+      - name: Download verified full ChairKeeper pages
         run: |
-          from pathlib import Path
-          import base64, gzip
+          set -euo pipefail
+          mkdir -p simply-hope-live-v098
+          curl -fL --retry 3 --retry-delay 2 'https://at.adobe.com/XbdYW51EXpZL6w0A' -o simply-hope-live-v098/index.html
+          curl -fL --retry 3 --retry-delay 2 'https://at.adobe.com/I8SKiPitgaFA7o1h' -o simply-hope-live-v098/owner.html
 
-          src = Path('simply-hope-play-v096')
-          out = Path('simply-hope-live-v098')
-          out.mkdir(exist_ok=True)
+          customer_size=$(wc -c < simply-hope-live-v098/index.html)
+          owner_size=$(wc -c < simply-hope-live-v098/owner.html)
+          echo "customer bytes: $customer_size"
+          echo "owner bytes: $owner_size"
 
-          files = {
-              'index.html': ['index-1.b64','index-2.b64','index-3.b64'],
-              'owner.html': ['owner-1.b64','owner-2.b64','owner-3.b64'],
-          }
+          test "$customer_size" -gt 200000
+          test "$owner_size" -gt 100000
+          grep -qi '<!doctype html' simply-hope-live-v098/index.html
+          grep -qi '<!doctype html' simply-hope-live-v098/owner.html
+          grep -q 'Simply Hope' simply-hope-live-v098/index.html
+          grep -q 'Simply Hope' simply-hope-live-v098/owner.html
 
-          for target, chunks in files.items():
-              encoded = ''.join((src / c).read_text(encoding='utf-8').strip() for c in chunks)
-              html = gzip.decompress(base64.b64decode(encoded)).decode('utf-8')
-              html = html.replace('v0.9.6-open-play', 'v0.9.8-direct-host')
-              html = html.replace('v0.9.6', 'v0.9.8')
-              html = html.replace('Open Full-Play Sandbox · Live AI', 'Direct Full-Play Sandbox · Live AI')
-              (out / target).write_text(html, encoding='utf-8')
-              print(target, len(html))
-
-      - name: Commit reconstructed pages
+      - name: Commit direct pages
         run: |
           git config user.name "ChairKeeper Build Bot"
           git config user.email "actions@users.noreply.github.com"
@@ -48,6 +42,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No changes"
           else
-            git commit -m "Publish ChairKeeper v0.9.8 direct HTML"
+            git commit -m "Publish ChairKeeper direct full HTML"
             git push
           fi
