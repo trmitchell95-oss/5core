@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#fff8fb">
+  <meta name="description" content="Simply Hope Designs in Lubbock, Texas. Request a nail appointment, share your inspiration, and get a personal confirmation.">
+  <title>Simply Hope Designs | Lubbock Nail Artist</title>
+  <link rel="stylesheet" href="app.css?v=099">
+</head>
+<body data-page="public" class="hope-live-page">
+  <div id="publicSandboxNotice" style="background:#fff0f5;border-bottom:1px solid #efc7d5;padding:8px 14px;text-align:center;font:700 13px/1.3 system-ui;color:#7e3650">PRACTICE SANDBOX · Please use test/fake customer information while Hope experiments.</div>
+  <div class="hope-site-shell">
+    <header class="hope-header">
+      <a class="hope-header-brand" href="#home" aria-label="Simply Hope Designs home">
+        <img src="https://iitliogbmczplvoscnlo.supabase.co/storage/v1/object/public/chairkeeper-catalog/brand/simply-hope-logo.jpg" alt="Simply Hope Designs logo">
+        <span>Simply Hope Designs</span>
+      </a>
+      <nav class="hope-nav" aria-label="Main navigation">
+        <a href="#home">Home</a><a href="#services">Services</a><a href="#gallery">Gallery</a><a href="#contact">Contact</a>
+      </nav>
+      <button class="hope-nav-book" data-intent="booking">Book Now ✦</button>
+    </header>
+    <main>
+      <section class="hope-hero" id="home">
+        <div class="hope-hero-copy">
+          <img class="hope-main-logo" src="https://iitliogbmczplvoscnlo.supabase.co/storage/v1/object/public/chairkeeper-catalog/brand/simply-hope-logo.jpg" alt="Simply Hope Designs butterfly nail polish logo">
+          <h1>Beautiful nails,<br><em>easy booking.</em></h1>
+          <p class="hope-subtitle">Friendly, detail-focused nail artist in Lubbock, Texas. Share the look you want, request a time, and get a personal confirmation.</p>
+          <div class="hope-hero-actions"><button class="hope-primary" data-intent="booking">▣ &nbsp; Book an Appointment</button><button class="hope-secondary" data-intent="callback">♡ &nbsp; Help Me Choose</button></div>
+          <div class="hope-trust-row"><span>♡ <b>Personal service</b></span><span>✦ <b>Your inspo welcome</b></span><span>♢ <b>Made for you</b></span></div>
+        </div>
+        <aside class="hope-booking-card" id="request">
+          <div class="hope-booking-heading"><span>✦</span><div><h2>Request an Appointment</h2><p>Tell me what you're looking for and I'll personally confirm your time.</p></div><span>✦</span></div>
+          <div class="hope-intent-tabs"><button class="active" id="bookingChoice" type="button">Book nails</button><button id="callbackChoice" type="button">Help me choose</button></div>
+          <form id="bookingForm" class="hope-compact-form">
+            <div id="serviceCards" class="hidden" aria-hidden="true"></div>
+            <div class="hope-form-grid">
+              <label>Service<select class="field" name="service" id="serviceSelect" required></select></label>
+              <label>Preferred Date<input class="field" name="date" type="date" required></label>
+              <label class="hope-time-field">Preferred Time<div id="slotPicker" class="hope-slot-picker"><div class="hint">Choose a date to check openings.</div></div><input class="field" name="time" type="time" required></label>
+              <label>Inspiration Photo <span>optional</span><span class="hope-upload-box"><input id="inspo" type="file" accept="image/jpeg,image/png,image/webp" capture="environment"><b>☁ Upload a photo</b><small>PNG, JPG or WebP · up to 8 MB</small></span></label>
+              <div class="preview public-preview hope-inspo-preview" id="inspoPreview"></div>
+              <label>Your Name<input class="field" name="name" autocomplete="name" placeholder="First & Last" required></label>
+              <label>Phone Number<input class="field" name="phone" autocomplete="tel" inputmode="tel" placeholder="(806) 555-1234" required></label>
+            </div>
+            <details class="hope-more-details"><summary>Add nail details <span>optional</span></summary><div class="hope-details-body">
+              <div class="hope-radio-row" data-radio-group="currentNails"><label><input type="radio" name="currentNails" value="Bare / natural nails" checked> Bare / natural</label><label><input type="radio" name="currentNails" value="Gel polish"> Gel on now</label><label><input type="radio" name="currentNails" value="Acrylic"> Acrylic on now</label><label><input type="radio" name="currentNails" value="Not sure"> Not sure</label></div>
+              <div class="hope-form-grid mini"><label>Shape<select class="field" name="shape"><option>Not sure</option><option>Almond</option><option>Square</option><option>Coffin</option><option>Round</option><option>Stiletto</option></select></label><label>Length<select class="field" name="length"><option>Not sure</option><option>Natural</option><option>Short</option><option>Medium</option><option>Long</option><option>XL+</option></select></label><label>If that time is taken<select class="field" name="flexibility"><option>Closest time that day</option><option>Earlier that day</option><option>Later that day</option><option>Another day is fine</option><option>Text/call me first</option></select></label><label>Email <span>optional</span><input class="field" name="email" autocomplete="email" type="email" placeholder="you@example.com"></label></div>
+              <div class="contact-choice"><span>Best way to reach you:</span><label><input type="radio" name="contactMethod" value="Text" checked> Text</label><label><input type="radio" name="contactMethod" value="Call"> Call</label><label><input type="radio" name="contactMethod" value="Email"> Email</label></div>
+            </div></details>
+            <label class="hope-notes-label">Notes <span>optional</span><textarea class="field" rows="3" name="note" placeholder="Anything I should know? Art, removal, repair, special occasion, matching an outfit..."></textarea></label>
+            <label class="consent-line hope-consent"><input type="checkbox" required> I'm okay with Simply Hope Designs contacting me about this appointment request.</label>
+            <div class="hope-hp-field" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+            <button class="hope-send public-submit" type="submit">✦ &nbsp; Send Request</button><p class="hope-personal-note">♡ You'll get a personal confirmation. This request is not final until the nail tech confirms it.</p>
+          </form>
+          <form id="callbackForm" class="hope-callback-form hidden"><div class="hope-callback-icon">♡</div><h3>Not sure what to book?</h3><p>Don't guess. Tell me how to reach you and I'll help you figure it out.</p><label>Your Name<input class="field" name="name" required></label><label>Best Phone<input class="field" name="phone" required inputmode="tel"></label><label>Email <span>optional</span><input class="field" name="email" type="email"></label><label>Best callback time<select class="field" name="callTime"><option>As soon as you can</option><option>Morning</option><option>Lunch</option><option>Afternoon</option><option>After 5 PM</option></select></label><label>Interested in<select class="field" name="service" id="callbackService"></select></label><label>What are you trying to figure out?<textarea class="field" rows="4" name="note" placeholder="I saw a design I like, I need a pedi too, I'm not sure what service to choose..."></textarea></label><div class="hope-hp-field" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div><button class="hope-send public-submit" type="submit">Ask for help →</button></form>
+          <div id="success" class="public-success hope-success hidden"><div class="success-check">✓</div><h2>Request received.</h2><p>I’ll personally review it and reach out with confirmation or the closest available option.</p><div class="confirmation-number">REQUEST <strong id="confirmationNumber">—</strong></div><button class="hope-secondary" id="another" type="button">Start another request</button></div>
+        </aside>
+      </section>
+      <section class="hope-gallery-section" id="gallery"><div class="hope-section-title"><span></span><div><b>✦</b><h2>Recent Work</h2><p>Handcrafted sets. Thoughtful details. Made for you.</p></div><span></span></div><div class="hope-gallery-grid" id="galleryGrid"><figure><img src="https://iitliogbmczplvoscnlo.supabase.co/storage/v1/object/public/chairkeeper-catalog/portfolio/simply-hope-green.jpg" alt="Green custom nail set by Simply Hope Designs"></figure><figure><img src="https://iitliogbmczplvoscnlo.supabase.co/storage/v1/object/public/chairkeeper-catalog/portfolio/simply-hope-blue.jpg" alt="Blue and white custom nail set by Simply Hope Designs"></figure></div><button class="hope-gallery-button" data-intent="booking">Book a set inspired by these ✦</button></section>
+      <section class="hope-services-section" id="services"><div class="hope-section-title"><span></span><div><b>✦</b><h2>Services & Starting Prices</h2></div><span></span></div><div class="hope-price-grid" id="quickPrices"></div><p class="hope-price-note" id="pricingNote">Prices may vary based on design, length, removal, and repairs. Final details are personally confirmed before your appointment.</p></section>
+      <section class="hope-promise"><div class="hope-promise-medallion">♡<small>PERSONAL<br>BOOKING</small></div><div class="hope-promise-copy"><h2>Request a time. Get a personal confirmation.</h2><p>No mystery calendar and no wondering whether your DM disappeared. Send the request, and a real person reviews it.</p></div><div class="hope-promise-list"><span>◎ You request your preferred time</span><span>◎ I confirm it personally</span><span>◎ Then you get excited for your nails</span></div></section>
+    </main>
+    <footer class="hope-footer" id="contact"><div class="hope-footer-brand"><img src="https://iitliogbmczplvoscnlo.supabase.co/storage/v1/object/public/chairkeeper-catalog/brand/simply-hope-logo.jpg" alt="Simply Hope Designs"><div><b>Simply Hope Designs</b><span>Nails that feel like you.</span></div></div><div class="hope-footer-contact"><span>⌖ Lubbock, Texas</span><a href="mailto:maryhope1234@gmail.com">✉ maryhope1234@gmail.com</a></div><button class="hope-primary" data-intent="booking">▣ Book an Appointment</button></footer>
+    <div class="hope-bottom-bar">© 2026 Simply Hope Designs <span>✦</span> Appointment requests are personally confirmed.</div>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script>
+window.CK_CONFIG={
+  studioSlug:'simply-hope-designs',
+  supabaseUrl:'https://iitliogbmczplvoscnlo.supabase.co',
+  supabasePublishableKey:'sb_publishable_LH7FPASKCnZklZeRbwWqBg_w1Ziv9-Z',
+  cloudRequired:true,
+  version:'0.9.9',
+  releaseName:'Full-Play Cloud Sandbox · Direct Build',
+  buildId:'v0.9.9-direct-cloud-sandbox',
+  schemaVersion:'0006_v090_ai_intake_client_cards',
+  buildDate:'2026-08-25',
+  sandboxMode:true,
+  ownerRedirectUrl:'./owner.html',
+  customerUrl:'./'
+};
+</script>
+  <script type="module" src="app.js?v=099"></script>
+</body>
+</html>

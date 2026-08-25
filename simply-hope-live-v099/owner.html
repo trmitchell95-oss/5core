@@ -1,0 +1,394 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#3b2530">
+    
+  <title>Simply Hope Designs | ChairKeeper</title>
+  <link rel="stylesheet" href="app.css?v=099">
+</head>
+<body data-page="owner">
+  <div id="ownerGate" class="owner-gate hidden">
+    <div class="login-card">
+      <div class="simply-mark">SH</div>
+      <div class="eyebrow" style="color:#a14f69">PRIVATE OWNER SIDE</div>
+      <h1>Simply Hope Designs</h1>
+      <p>This is your practice sandbox. Sign in and change anything you want — none of it is the future production salon database.</p>
+      <form id="loginForm">
+        <label>Email</label>
+        <input class="field" id="loginEmail" type="email" autocomplete="email" required placeholder="you@example.com">
+        <label style="margin-top:10px">Sandbox password</label>
+        <input class="field" id="loginPassword" type="password" autocomplete="current-password" required placeholder="Sandbox password">
+        <button class="btn primary" type="submit" style="width:100%;margin-top:10px">Enter ChairKeeper sandbox</button>
+      </form>
+      <div id="loginSent" class="note hidden" style="margin-top:12px">Sandbox access only. Practice data can be reset later.</div>
+    </div>
+  </div>
+  <div id="ownerApp" class="hidden">
+  <div class="shell">
+    <header class="top">
+      <div>
+        <div class="brand">Simply Hope <span>· ChairKeeper</span></div>
+        <div class="hint" id="studioLine"></div>
+      </div>
+      <div class="row">
+        <button class="btn primary sm" id="addIntakeBtn">+ Add note / photo</button>
+        <button class="btn alt sm" id="copyBookingLink">Copy booking link</button>
+        <a class="btn alt sm" href="./" target="_blank">View customer page</a>
+        <div class="pill" id="cloudBadge">Private owner side</div><button class="btn alt sm" id="signOut">Sign out</button>
+      </div>
+    </header>
+
+    <div class="banner" id="buildBanner">CHAIRKEEPER · DEMO MODE — fake information only. Nothing here is connected to real customers yet.</div>
+
+    <nav class="nav">
+      <button class="active" data-view="home">Needs Me</button>
+      <button data-view="requests">Requests <span id="requestCount"></span></button>
+      <button data-view="calendar" class="cloud-only-control">Calendar</button>
+      <button data-view="catalog" class="cloud-only-control">Catalog</button>
+      <button data-view="clients">Clients</button>
+      <button data-view="setup">Setup</button>
+      <button data-view="trash">Trash</button>
+    </nav>
+
+    <section class="section active" id="home">
+      <div class="needsbox">
+        <div class="eyebrow" style="color:#a14f69">What needs me?</div>
+        <h1 id="headline">You’re pretty set.</h1>
+        <div class="sub">Handle what matters, then get back to nails, lunch, TikTok, family, or whatever you actually want to be doing.</div>
+        <div id="needs"></div>
+      </div>
+      <div class="metrics" id="metrics"></div>
+      <div class="card assistant-card" id="assistantQueueCard" style="margin-bottom:17px"><div class="row between"><div><div class="eyebrow" style="color:#a14f69">ChairKeeper Assistant</div><h2>Notes and photos waiting to be filed.</h2><div class="sub">Certain routing files cleanly. Anything uncertain stays here for you.</div></div><button class="btn primary sm" id="addIntakeHomeBtn">+ Add note / photo</button></div><div id="intakeQueue" style="margin-top:10px"></div></div>
+      <div class="grid2">
+        <div class="card">
+          <div class="row between"><div><h2>Today</h2><div class="sub">Your chair, not a spreadsheet.</div></div><button class="btn primary sm" id="finishQuick">+ Finish visit</button></div>
+          <div id="today"></div>
+        </div>
+        <div class="card">
+          <h2>Fill My Chair</h2>
+          <div class="sub">Turn an opening into a useful text in one tap.</div>
+          <div class="formgrid" style="margin-top:10px"><div><label>Date</label><input class="field" id="openDate" type="date"></div><div><label>Time</label><input class="field" id="openTime" type="time" value="14:00"></div></div>
+          <button class="btn primary" id="fillBtn" style="width:100%;margin-top:10px">Find candidates</button>
+          <div id="fillResults"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="requests">
+      <div class="grid2"><div class="card"><h2>Appointment requests</h2><div id="bookingInbox"></div><details class="handled-box" id="handledBox"><summary id="handledSummary">Handled requests</summary><div class="handled-explain">Confirmed requests move here so the active inbox stays clean.</div><div id="handledBookings"></div></details></div><div class="card"><h2>Callbacks</h2><div id="callbackInbox"></div></div></div>
+    </section>
+
+    <section class="section cloud-only-control" id="calendar">
+      <div class="row between cal-toolbar">
+        <div class="row cal-view-toggle">
+          <button class="active" data-calview="day">Day</button>
+          <button data-calview="week">Week</button>
+          <button data-calview="month">Month</button>
+        </div>
+        <div class="row cal-nav">
+          <button class="btn alt sm" id="calPrev">‹</button>
+          <button class="btn alt sm" id="calToday">Today</button>
+          <button class="btn alt sm" id="calNext">›</button>
+          <span class="cal-date-label" id="calDateLabel"></span>
+        </div>
+        <div class="row">
+          <button class="btn alt sm" id="blockTimeBtn">+ Block time</button>
+          <button class="btn primary sm" id="addApptBtn">+ Appointment</button>
+        </div>
+      </div>
+      <div class="card cal-card">
+        <div id="calDay" class="cal-day"></div>
+        <div id="calWeek" class="cal-week hidden"></div>
+        <div id="calMonth" class="cal-month hidden"></div>
+      </div>
+    </section>
+
+    <section class="section cloud-only-control" id="catalog">
+      <div class="row between" style="margin-bottom:12px">
+        <div><h1 style="margin:0">Catalog</h1><div class="sub">This is what customers see and book. Changing an existing item saves right away — like updating a menu board. A brand-new item stays as a private draft, invisible to customers and not bookable, until you tap Publish.</div></div>
+      </div>
+      <div class="row" style="margin-bottom:12px;flex-wrap:wrap">
+        <button class="btn alt sm" id="addCategoryBtn">+ Category</button>
+        <button class="btn primary sm" id="addCatalogServiceBtn">+ Service</button>
+        <button class="btn alt sm" id="previewCatalogBtn">See what customers see</button>
+        <button class="btn primary sm" id="publishCatalogBtn">Publish new items <span id="draftCountBadge"></span></button>
+        <button class="btn danger sm" id="undoPublishBtn">Undo last publish</button>
+      </div>
+      <div id="catalogNote" class="hint" style="margin-bottom:10px"></div>
+
+      <div class="card" style="margin-bottom:17px">
+        <div class="row between"><div><div class="eyebrow" style="color:#a14f69">Categories</div><h2>Group your services.</h2><div class="sub">Optional. Reorder with the arrows. Changes here save right away.</div></div></div>
+        <div id="categoryEditor" class="category-editor"></div>
+        <button class="btn primary" id="saveCategories" style="width:100%;margin-top:12px">Save categories</button>
+      </div>
+
+      <div id="catalogServiceList"></div>
+
+      <div class="card cloud-only-control" style="margin-top:17px">
+        <div class="row between"><div><div class="eyebrow" style="color:#a14f69">Add-ons</div><h2>Removal, repair, detailed art.</h2><div class="sub">ChairKeeper can notice these words in a request and suggest extra time. You decide whether to add it before confirming.</div></div><button class="btn alt sm" id="addExtraRow">+ Add-on</button></div>
+        <div class="extras-editor" id="extrasEditor"></div>
+        <button class="btn primary" id="saveExtras" style="width:100%;margin-top:12px">Save add-ons</button>
+      </div>
+    </section>
+
+    <section class="section" id="clients">
+      <div class="row between" style="margin-bottom:12px"><div><h1 style="margin:0">Clients</h1><div class="sub">Their nail history, photos, preferences, and next visit without your memory doing the work.</div></div><div class="row"><button class="btn alt" id="addIntakeClientsBtn">+ Note / photo</button><button class="btn primary" id="addClient">+ Client</button></div></div>
+      <input class="field" id="clientSearch" placeholder="Search name, service, color, shape, design, or saved tag…" style="margin-bottom:12px">
+      <div class="clientgrid" id="clientGrid"></div>
+    </section>
+
+    <section class="section" id="setup">
+      <div class="grid2 setup-grid">
+        <div class="card">
+          <div class="eyebrow" style="color:#a14f69">One-time setup</div>
+          <h2>Make ChairKeeper sound like your business.</h2>
+          <p class="sub">Set this once. The customer page updates from here.</p>
+          <div id="localCloudNote" class="note hidden" style="margin-bottom:12px">Calendar, conflict protection, blocked time, live slot math, and cloud backups activate only in the secure handoff version. This local demo intentionally keeps those controls out of the way.</div>
+          <div class="formgrid">
+            <div class="span2"><label>Business name</label><input class="field" id="setupStudio"></div>
+            <div><label>Your name</label><input class="field" id="setupTech"></div>
+            <div><label>Location shown to customers</label><input class="field" id="setupLocation"></div>
+            <div><label>Business phone</label><input class="field" id="setupPhone" inputmode="tel"></div>
+            <div><label>Notification email</label><input class="field" id="setupEmail" type="email" disabled title="Owner email is tied to secure sign-in"></div><div><label>Pushover user key</label><input class="field" id="setupPushover" autocomplete="off"></div>
+            <div class="cloud-only-control"><label>Buffer between appointments (minutes)</label><input class="field" id="setupBuffer" type="number" min="0" max="120" step="5"></div>
+          </div>
+          <div class="hours-editor">
+            <h3>Working hours</h3>
+            <p class="hint">Turn on only the days you want customers to see real openings.</p>
+            <div class="hours-row" data-hours-day="mon"><label><input class="hours-on" type="checkbox"> Mon</label><input class="field hours-start" type="time" value="09:00"><span>to</span><input class="field hours-end" type="time" value="17:00"></div>
+            <div class="hours-row" data-hours-day="tue"><label><input class="hours-on" type="checkbox"> Tue</label><input class="field hours-start" type="time" value="09:00"><span>to</span><input class="field hours-end" type="time" value="17:00"></div>
+            <div class="hours-row" data-hours-day="wed"><label><input class="hours-on" type="checkbox"> Wed</label><input class="field hours-start" type="time" value="09:00"><span>to</span><input class="field hours-end" type="time" value="17:00"></div>
+            <div class="hours-row" data-hours-day="thu"><label><input class="hours-on" type="checkbox"> Thu</label><input class="field hours-start" type="time" value="09:00"><span>to</span><input class="field hours-end" type="time" value="17:00"></div>
+            <div class="hours-row" data-hours-day="fri"><label><input class="hours-on" type="checkbox"> Fri</label><input class="field hours-start" type="time" value="09:00"><span>to</span><input class="field hours-end" type="time" value="17:00"></div>
+            <div class="hours-row" data-hours-day="sat"><label><input class="hours-on" type="checkbox"> Sat</label><input class="field hours-start" type="time" value="09:00"><span>to</span><input class="field hours-end" type="time" value="17:00"></div>
+            <div class="hours-row" data-hours-day="sun"><label><input class="hours-on" type="checkbox"> Sun</label><input class="field hours-start" type="time" value="09:00"><span>to</span><input class="field hours-end" type="time" value="17:00"></div>
+          </div>
+          <button class="btn primary" id="saveSetup" style="width:100%;margin-top:12px">Save business setup</button>
+        </div>
+
+        <div>
+          <div class="card">
+            <div class="eyebrow" style="color:#a14f69">Notifications</div>
+            <h2>How requests reach you.</h2>
+            <div class="notification-status">
+              <div><b>Pushover</b><span>Connected when the server token is configured</span></div>
+              <div><b>Email</b><span>Connected when Resend is configured</span></div>
+            </div>
+            <div class="note" style="margin-top:12px">Keys stay on the server. They never go into the customer page or browser code.</div>
+          </div>
+          <div class="card" style="margin-top:17px">
+            <div class="eyebrow" style="color:#a14f69">ChairKeeper Assistant</div>
+            <h2>Quiet AI sorting.</h2>
+            <div class="notification-status assistant-status">
+              <div><b>AI note sorting</b><span id="aiSetupStatus">Checking server…</span></div>
+              <div><b>Voice notes</b><span>Transcribed only when you ask</span></div>
+              <div><b>Photo organization</b><span>Tags nail work; never identifies people from appearance</span></div>
+              <div><b>Automatic customer merging</b><span>Off</span></div>
+              <div><b>Anything uncertain</b><span>Needs Me</span></div>
+            </div>
+          </div>
+          <div class="card" id="buildInfoCard" style="margin-top:17px">
+            <div class="row between"><div><div class="eyebrow" style="color:#a14f69">About this build</div><h2>Version &amp; status.</h2></div><span class="pill" id="buildVersionPill">v—</span></div>
+            <div class="notification-status build-status" style="margin-top:10px">
+              <div><b>App version</b><span id="buildVersion">—</span></div>
+              <div><b>Release</b><span id="buildRelease">—</span></div>
+              <div><b>Mode</b><span id="buildMode">—</span></div>
+              <div><b>Cloud</b><span id="buildCloud">—</span></div>
+              <div><b>Database schema</b><span id="buildSchema">—</span></div>
+              <div><b>Build date</b><span id="buildDate">—</span></div>
+              <div><b>Build ID</b><span id="buildId">—</span></div>
+            </div>
+            <button class="btn alt sm" id="copyBuildInfo" type="button" style="margin-top:12px">Copy build info</button>
+            <div class="hint" style="margin-top:8px">If something acts strange, send this version info with the screenshot so we know exactly which build is running.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:17px">
+        <div class="row between"><div><div class="eyebrow" style="color:#a14f69">Service menu</div><h2>Quick edits for existing services.</h2><div class="sub">This is only for small name, price, or duration corrections on services already published. <b>Add, archive, restore, change price type, categories, photos, or availability in Catalog.</b> New services can only be created there, so nothing accidentally goes live at $0.</div></div></div>
+        <div class="service-editor" id="serviceEditor"></div>
+        <button class="btn primary" id="saveServices" style="width:100%;margin-top:12px">Save service menu</button>
+      </div>
+
+      <div class="card cloud-only-control" style="margin-top:17px">
+        <div class="row between"><div><div class="eyebrow" style="color:#a14f69">Closures &amp; special hours</div><h2>Days that don't follow the weekly schedule.</h2><div class="sub">Vacation, a holiday, or a one-off shorter day. This overrides weekly hours for that date only, for both you and the public booking page.</div></div><button class="btn alt sm" id="addExceptionBtn">+ Date</button></div>
+        <div id="exceptionsList"></div>
+      </div>
+
+      <div class="card cloud-only-control" style="margin-top:17px" id="sandboxCard">
+        <div class="eyebrow" style="color:#a14f69">FULL-PLAY SANDBOX</div>
+        <h2>This copy is hers to experiment with.</h2>
+        <p class="sub">Practice customers only. She can change the catalog, upload nail photos, create clients, test bookings, record notes, use ChairKeeper AI, archive things, and generally try to break it. Nothing in this sandbox is the future production database.</p>
+        <div class="note">Before we move her toward real customers, use the backup buttons below. We can manually carry over the good catalog, photos, preferences, and other keeper data.</div>
+      </div>
+
+      <div class="card cloud-only-control" style="margin-top:17px">
+        <div class="eyebrow" style="color:#a14f69">Your data</div>
+        <h2>Export a backup.</h2>
+        <p class="sub">Clients, appointments, and requests as a file you keep. No photos or audio (those stay in private storage).</p>
+        <div class="row"><button class="btn alt sm" id="exportCsv">Download CSV</button><button class="btn alt sm" id="exportJson">Download JSON</button></div>
+      </div>
+    </section>
+
+    <section class="section" id="trash"><div class="card"><h2>30-day trash</h2><div class="sub">Normal deletions can be recovered. HUMAN SAVE media does not auto-roll into trash.</div><div id="trashList"></div></div></section>
+  </div>
+
+  <div class="sheetbg" id="visitSheet"><div class="sheet"><div class="row between"><div><div class="eyebrow" style="color:#a14f69">Finish visit</div><h2>Photo → talk → done.</h2></div><button class="btn alt" data-close="visitSheet">×</button></div><label>Client</label><select class="field" id="visitClient"></select><div class="capturegrid" style="margin-top:11px"><div class="capture"><h3>1. Photos / record</h3><input id="visitPhotos" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" multiple><div class="preview" id="visitPreview"></div><label style="margin-top:9px">What are these mainly?</label><select class="field" id="photoKind"><option value="portfolio">Good finished work / portfolio</option><option value="private_record">Private record / evidence</option><option value="work">Working reference</option></select></div><div class="capture"><h3>2. Tell ChairKeeper</h3><button class="mic" id="mic">🎙 Tap and talk naturally</button><div class="hint" id="micStatus">Original audio can be retained separately from the parsed note.</div><textarea class="field" rows="5" id="narration" style="margin-top:8px" placeholder="Kayla, medium square, black French tip, charged 65, right thumb was already split, back in three weeks..."></textarea></div></div><div class="card" style="box-shadow:none;margin-top:11px"><div class="row between"><h3>ChairKeeper heard</h3><button class="btn alt sm" id="parse">Parse</button></div><div class="parsed" id="parsed"></div></div><label style="margin-top:10px"><input type="checkbox" id="humanSave"> HUMAN SAVE today’s photos/audio</label><button class="btn primary" id="saveVisit" style="width:100%;margin-top:11px">Save visit and be done</button></div></div>
+  <div class="sheetbg" id="intakeSheet"><div class="sheet intake-sheet">
+    <div class="row between"><div><div class="eyebrow" style="color:#a14f69">ChairKeeper Assistant</div><h2 id="intakeTitle">Add note / photo</h2></div><button class="btn alt" data-close="intakeSheet">×</button></div>
+    <div class="note">Talk, type, or add nail photos. ChairKeeper extracts the useful details and proposes where they belong. It never merges customers automatically.</div>
+    <div class="formgrid" style="margin-top:11px">
+      <div><label>Client <span>optional — leave on Auto-match</span></label><select class="field" id="intakeClient"><option value="">Auto-match safely</option></select></div>
+      <div><label>Appointment <span>optional</span></label><select class="field" id="intakeAppointment"><option value="">No appointment link</option></select></div>
+      <div><label>Pictures are mainly</label><select class="field" id="intakePhotoKind"><option value="portfolio">Good finished work / portfolio</option><option value="private_record">Private record / evidence</option><option value="work">Working reference</option></select></div>
+      <div><label>Photos</label><input class="field" id="intakePhotos" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" multiple></div>
+    </div>
+    <div class="preview" id="intakePreview" style="margin-top:8px"></div>
+    <div class="row" style="margin-top:10px"><button class="mic" id="intakeMic" type="button">🎙 Talk</button><span class="hint" id="intakeMicStatus">Or type below.</span></div>
+    <textarea class="field" rows="6" id="intakeText" style="margin-top:8px" placeholder="Sarah loved the sage green almond set. Make them a little shorter next time. She wants chrome for her birthday…"></textarea>
+    <button class="btn primary" id="analyzeIntakeBtn" style="width:100%;margin-top:12px">Analyze &amp; route</button>
+    <div class="hint" id="intakeStatus" style="margin-top:8px"></div>
+  </div></div>
+
+  <div class="sheetbg" id="intakeReviewSheet"><div class="sheet">
+    <div class="row between"><div><div class="eyebrow" style="color:#a14f69">Needs Me</div><h2>Check where this belongs.</h2></div><button class="btn alt" data-close="intakeReviewSheet">×</button></div>
+    <div id="intakeReviewBody"></div>
+    <label style="margin-top:10px">File to client</label><select class="field" id="reviewClient"></select>
+    <label style="margin-top:10px">Link to appointment <span>optional</span></label><select class="field" id="reviewAppointment"><option value="">No appointment link</option></select>
+    <label style="margin-top:10px"><input type="checkbox" id="intakeRemember" checked> Remember the approved likes, avoid/change notes, future ideas, and search tags</label>
+    <label style="margin-top:8px"><input type="checkbox" id="intakeHumanSave"> HUMAN SAVE these photos</label>
+    <div class="row" style="margin-top:12px;justify-content:space-between"><button class="btn danger sm" id="dismissIntakeBtn" type="button">Dismiss</button><button class="btn primary" id="fileIntakeBtn" type="button">File to this client</button></div>
+  </div></div>
+
+  <div class="sheetbg" id="clientSheet"><div class="sheet"><div class="row between"><h2 id="clientTitle"></h2><button class="btn alt" data-close="clientSheet">×</button></div><div id="clientDetail"></div></div></div>
+  <div class="sheetbg cloud-only-control" id="apptFormSheet"><div class="sheet"><div class="row between"><h2 id="apptFormTitle">New appointment</h2><button class="btn alt" data-close="apptFormSheet">×</button></div>
+    <form id="apptForm">
+      <label>Client</label>
+      <select class="field" id="apptClient"><option value="">+ New client…</option></select>
+      <div class="formgrid" id="apptNewClientFields" style="margin-top:9px">
+        <div><label>Name</label><input class="field" id="apptNewName"></div>
+        <div><label>Phone</label><input class="field" id="apptNewPhone" inputmode="tel"></div>
+      </div>
+      <div class="formgrid" style="margin-top:9px">
+        <div><label>Service</label><select class="field" id="apptService"></select></div>
+        <div><label>Date</label><input class="field" id="apptDate" type="date"></div>
+        <div><label>Time</label><input class="field" id="apptTime" type="time"></div>
+        <div><label>Duration (minutes)</label><input class="field" id="apptDuration" type="number" min="15" step="5"></div>
+      </div>
+      <div id="apptExtrasChoices" class="row" style="margin-top:9px"></div>
+      <label style="margin-top:9px">Note <span>optional</span></label>
+      <textarea class="field" id="apptNote" rows="2"></textarea>
+      <div class="hint" id="apptConflictHint" style="margin-top:8px"></div>
+      <button class="btn primary" type="submit" style="width:100%;margin-top:12px">Save appointment</button>
+    </form>
+  </div></div>
+
+  <div class="sheetbg cloud-only-control" id="apptDetailSheet"><div class="sheet"><div class="row between"><h2 id="apptDetailTitle">Appointment</h2><button class="btn alt" data-close="apptDetailSheet">×</button></div>
+    <div id="apptDetailBody"></div>
+    <div class="row actions" id="apptDetailActions" style="margin-top:12px"></div>
+  </div></div>
+
+  <div class="sheetbg cloud-only-control" id="blockFormSheet"><div class="sheet"><div class="row between"><h2>Block time</h2><button class="btn alt" data-close="blockFormSheet">×</button></div>
+    <form id="blockForm">
+      <div class="formgrid">
+        <div><label>Date</label><input class="field" id="blockDate" type="date" required></div>
+        <div><label>Start</label><input class="field" id="blockStart" type="time" required></div>
+        <div><label>End</label><input class="field" id="blockEnd" type="time" required></div>
+        <div><label>Reason</label><select class="field" id="blockReason"><option>Lunch</option><option>Errand</option><option>Personal time</option><option>Day off</option><option>Vacation</option><option>Other</option></select></div>
+      </div>
+      <button class="btn primary" type="submit" style="width:100%;margin-top:12px">Block this time</button>
+    </form>
+  </div></div>
+
+  <div class="sheetbg cloud-only-control" id="exceptionFormSheet"><div class="sheet"><div class="row between"><h2>Add a date exception</h2><button class="btn alt" data-close="exceptionFormSheet">×</button></div>
+    <form id="exceptionForm">
+      <label>Date</label><input class="field" id="excDate" type="date" required>
+      <label style="margin-top:9px"><input type="checkbox" id="excClosed" checked> Closed all day</label>
+      <div class="formgrid" id="excHoursFields" style="margin-top:9px">
+        <div><label>Open</label><input class="field" id="excStart" type="time" value="09:00"></div>
+        <div><label>Close</label><input class="field" id="excEnd" type="time" value="17:00"></div>
+      </div>
+      <label style="margin-top:9px">Reason <span>optional</span></label>
+      <input class="field" id="excReason" placeholder="Vacation, holiday, appointment...">
+      <button class="btn primary" type="submit" style="width:100%;margin-top:12px">Save</button>
+    </form>
+  </div></div>
+
+  <div class="sheetbg cloud-only-control" id="catalogServiceSheet"><div class="sheet"><div class="row between"><h2 id="catalogServiceTitle">New service</h2><button class="btn alt" data-close="catalogServiceSheet">×</button></div>
+    <div id="catalogDraftNote" class="note hidden" style="margin-bottom:10px">This is a new item. It stays private — invisible to customers and not bookable — until you press <b>Publish new items</b> on the Catalog screen.</div>
+    <form id="catalogServiceForm">
+      <div class="formgrid">
+        <div class="span2"><label>Name</label><input class="field" id="csName" required maxlength="120"></div>
+        <div><label>Category <span>optional</span></label><select class="field" id="csCategory"><option value="">No category</option></select></div>
+        <div><label>Duration (minutes)</label><input class="field" id="csDuration" type="number" min="15" max="600" step="5" required></div>
+      </div>
+      <label style="margin-top:9px">Description <span>optional, shown to customers</span></label>
+      <textarea class="field" id="csDescription" rows="2" maxlength="600"></textarea>
+      <label style="margin-top:9px">How is this priced?</label>
+      <select class="field" id="csPriceType">
+        <option value="fixed">Fixed price</option>
+        <option value="starting_at">Starting at</option>
+        <option value="range">Price range</option>
+        <option value="consultation">Consultation required (no price shown)</option>
+      </select>
+      <div class="formgrid" id="csPriceFields" style="margin-top:9px">
+        <div id="csPriceMinWrap"><label id="csPriceMinLabel">Price</label><input class="field" id="csPrice" type="number" min="0" step="1"></div>
+        <div id="csPriceMaxWrap" class="hidden"><label>Up to</label><input class="field" id="csPriceMax" type="number" min="0" step="1"></div>
+      </div>
+      <label style="margin-top:9px">Customer visibility</label>
+      <select class="field" id="csStatus">
+        <option value="visible">Visible &amp; bookable</option>
+        <option value="temporarily_unavailable">Shown, but not bookable right now</option>
+        <option value="hidden">Hidden from customers</option>
+      </select>
+      <div class="row" style="margin-top:9px">
+        <label class="badge" style="cursor:pointer"><input type="checkbox" id="csFeatured"> Featured</label>
+        <label class="badge" style="cursor:pointer"><input type="checkbox" id="csSeasonal"> Seasonal</label>
+      </div>
+
+      <h3 style="margin-top:16px">Pictures</h3>
+      <div class="hint">Phone photos are fine — ChairKeeper resizes them for the website automatically. JPG, PNG, or WEBP, up to 15 MB.</div>
+      <div id="csImageGrid" class="catalog-image-grid"></div>
+      <div class="row" style="margin-top:9px;align-items:center">
+        <input id="csImageInput" type="file" accept="image/jpeg,image/png,image/webp" capture="environment">
+        <span id="csUploadStatus" class="hint"></span>
+      </div>
+
+      <div class="row" style="margin-top:16px;justify-content:space-between">
+        <button class="btn danger sm" type="button" id="csArchiveBtn">Archive this service</button>
+        <button class="btn primary" type="submit" id="csSaveBtn">Save</button>
+      </div>
+    </form>
+  </div></div>
+
+  <div class="sheetbg cloud-only-control" id="catalogPreviewSheet"><div class="sheet"><div class="row between"><h2>What customers see</h2><button class="btn alt" data-close="catalogPreviewSheet">×</button></div>
+    <div class="hint" style="margin-bottom:10px">This includes any draft items so you can check them before publishing — customers cannot see draft items yet. Anything marked "Hidden" is shown here for your reference only.</div>
+    <div id="catalogPreviewBody"></div>
+  </div></div>
+
+  <div class="sheetbg" id="clientFormSheet"><div class="sheet"><div class="row between"><h2>Add client</h2><button class="btn alt" data-close="clientFormSheet">×</button></div><form id="clientForm"><div class="formgrid"><div><label>Name</label><input class="field" name="name" required></div><div><label>Phone</label><input class="field" name="phone" inputmode="tel"></div><div><label>Email</label><input class="field" name="email" type="email"></div><div><label>Usual service</label><input class="field" name="service"></div></div><button class="btn primary" type="submit" style="width:100%;margin-top:12px">Add client</button></form></div></div>
+  <div class="image-lightbox" id="imageLightbox" aria-hidden="true"><button class="image-lightbox-close" id="imageLightboxClose" type="button" aria-label="Close image">×</button><img id="imageLightboxImg" alt="Customer inspiration image"><div class="image-lightbox-caption">Customer inspiration · tap outside the image or × to close</div></div>
+  <div class="toast" id="toast"></div>
+  </div>
+  <script>if(location.hostname==='127.0.0.1'||location.hostname==='localhost'){if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister()));} if(window.caches){caches.keys().then(keys=>keys.forEach(k=>caches.delete(k)));}}</script>
+  <script>
+window.CK_CONFIG={
+  studioSlug:'simply-hope-designs',
+  supabaseUrl:'https://iitliogbmczplvoscnlo.supabase.co',
+  supabasePublishableKey:'sb_publishable_LH7FPASKCnZklZeRbwWqBg_w1Ziv9-Z',
+  cloudRequired:true,
+  version:'0.9.9',
+  releaseName:'Full-Play Cloud Sandbox · Direct Build',
+  buildId:'v0.9.9-direct-cloud-sandbox',
+  schemaVersion:'0006_v090_ai_intake_client_cards',
+  buildDate:'2026-08-25',
+  sandboxMode:true,
+  ownerRedirectUrl:'./owner.html',
+  customerUrl:'./'
+};
+</script>
+  <script type="module" src="app.js?v=099"></script>
+</body>
+</html>
