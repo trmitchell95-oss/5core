@@ -111,3 +111,34 @@ jobs:
             git commit -m "Publish ChairKeeper v0.9.9 direct sandbox"
             git push
           fi
+
+      - name: Build deployment manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd simply-hope-live-v099
+          sha256sum index.html owner.html app.css app.js > SHA256SUMS.txt
+          cat > DEPLOY_README.txt <<'EOF'
+          SIMPLY HOPE DESIGNS / CHAIRKEEPER v0.9.9
+          Full-Play Cloud Sandbox - Vercel-ready static build
+
+          Deploy this folder as the Vercel project root.
+          It is already configured for the current ChairKeeper Supabase SANDBOX.
+          Do not reuse this exact config for production customer data without the security review.
+
+          Files required at runtime:
+            index.html
+            owner.html
+            app.css
+            app.js
+
+          SHA256SUMS.txt records the exact packaged file hashes.
+          EOF
+
+      - name: Upload Vercel-ready ZIP artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Simply_Hope_Designs_v0.9.9_VERCEL_READY
+          path: simply-hope-live-v099/
+          if-no-files-found: error
+          retention-days: 30
